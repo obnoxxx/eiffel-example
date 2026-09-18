@@ -1,12 +1,12 @@
 class
 	APPLICATION -- the root class
 
-create
-    make
+	create
+	make
 
-feature
-    make
-        do
-            print ("Hello, test..%N")
-        end
+	feature
+	make
+	do
+		print ("Hello, test..%N")
+	end
 end
