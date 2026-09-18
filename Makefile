@@ -20,7 +20,7 @@ $(TARGET): $(SOURCE) Makefile
 run: build
 	@echo running application...
 	@./$(TARGET)
-	@echo doine.
+	@echo done.
 
 .PHONY: lint.make
 lint.make:
