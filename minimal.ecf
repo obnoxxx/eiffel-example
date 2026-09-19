@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system name="minimal">
+    <target name="minimal">
+        <root class="APPLICATION" feature="make"/>
+        <cluster name="root_cluster" location="." recursive="false"/>
+    </target>
+</system>
