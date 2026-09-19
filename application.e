@@ -30,7 +30,7 @@ do
 				print ("invocation error: -h does not take an argument.%N")
 				print_help
 				die(1)
-		elseif attached separate_character_option_value('h')as l_val and then l_val.is_empty then
+		elseif attached separate_character_option_value('h') as l_val and then l_val.is_empty then
 				print_help
 				die(0)
 		end
