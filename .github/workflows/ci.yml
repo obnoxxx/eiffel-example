@@ -1,0 +1,41 @@
+name: CI
+on:
+
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - main
+
+jobs:
+
+  build:
+    name: lint build,  and test
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    #strategy:
+    #  matrix:
+    #    os: [ubuntu-latest, windows-latest, macos-latest]
+    #  fail-fast: false  # Let all jobs run even if one fails
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+        id: go
+      - name: Check out code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: install eiffel
+        run: brew install eiffelstudio
+        shell: bash
+      - name: run checks (lint, build, and unit test)
+        run: make check
+        shell: bash
