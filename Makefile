@@ -19,8 +19,8 @@ $(TARGET): $(SOURCE) Makefile
 
 .PHONY: run
 run: build
-	@echo running application...
-	@./$(TARGET)
+	@echo running the application...
+	@./$(TARGET) -n Eiffel
 	@echo done.
 
 .PHONY: lint.make
