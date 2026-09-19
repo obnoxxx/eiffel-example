@@ -6,6 +6,10 @@ GENERATED := application application.ecf EIFGENs
 
 EC ?= ec
 
+CHECKMAKE_VERSION := v0.3.2
+ACTIONLINT_VERSION := v1.7.12
+CHECKMAKE := go run github.com/checkmake/checkmake/cmd/checkmake@$(CHECKMAKE_VERSION)
+ACTIONLINT := go run github.com/rhysd/actionlint/cmd/actionlint@$(ACTIONLINT_VERSION)
 
 .PHONY: all
 all: build
@@ -26,11 +30,27 @@ run: build
 .PHONY: lint.make
 lint.make:
 	@echo linting the Makefile...
-	@checkmake Makefile
+	@$(CHECKMAKE) Makefile
 	@echo Makefile is good.
 
+.PHINY: lint.workflows
+lint.workflows:
+	@echo " Linting GitHub workflows..."
+	@$(ACTIONLINT) --color
+	@echo "All workflows are good."
+
+.PHONY: lint
+lint: lint.make lint.workflows
+
 .PHONY: test
-test: lint.make run
+test: build
+	@echo "testing application..."
+	@test "$$(./application -n Eiffel)" = "Hello, Eiffel!"
+	@echo "application works."
+
+.PHONY: check
+check: lint test
+
 
 .PHONY: clean
 clean:
