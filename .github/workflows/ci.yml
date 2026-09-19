@@ -14,7 +14,7 @@ on:
 jobs:
 
   build:
-    name: lint build,  and test
+    name: lint, build, and test
     runs-on: macos-latest
     permissions:
       contents: read
