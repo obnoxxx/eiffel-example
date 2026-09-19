@@ -4,6 +4,7 @@ SOURCE := application.e
 
 GENERATED := application application.ecf EIFGENs
 
+EC ?= ec
 
 
 .PHONY: all
@@ -13,7 +14,7 @@ all: build
 build: $(TARGET)
 
 $(TARGET): $(SOURCE) Makefile
-	@ec $(SOURCE)
+	@$(EC) $(SOURCE)
 	@chmod +x $(TARGET)
 
 .PHONY: run
