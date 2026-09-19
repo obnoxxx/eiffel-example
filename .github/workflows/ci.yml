@@ -36,6 +36,6 @@ jobs:
       - name: install eiffel
         run: brew install eiffelstudio
         shell: bash
-      - name: run checks (lint, build, and unit test)
+      - name: run checks (lint, build, and test)
         run: make check
         shell: bash
