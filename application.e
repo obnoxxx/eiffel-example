@@ -4,7 +4,7 @@ class
 	create
 	make
 
-	feature
+	feature {NONE}-- Initialization (private)
 	make
 	do
 		print ("Hello, test..%N")
