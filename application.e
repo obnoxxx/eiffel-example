@@ -1,10 +1,10 @@
 class
 	APPLICATION -- the root class
 
-	create
+create
 	make
 
-	feature {NONE}-- Initialization (private)
+feature {NONE}-- Initialization (private)
 	make
 	do
 		print ("Hello, test..%N")
