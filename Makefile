@@ -44,9 +44,9 @@ lint: lint.make lint.workflows
 
 .PHONY: test
 test: build
-	@echo "testing application..."
+	@echo "testing the eapplication..."
 	@test "$$(./application -n Eiffel)" = "Hello, Eiffel!"
-	@echo "application works."
+	@echo "The application works correctly."
 
 .PHONY: check
 check: lint test
