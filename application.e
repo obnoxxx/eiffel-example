@@ -1,3 +1,6 @@
+-- small example application in Eiffel
+-- just for practice and illustration purposes.
+
 class
 	APPLICATION -- the root class
 inherit
@@ -23,10 +26,16 @@ feature {NONE} -- Initialization
 do
 		name := ""
 		-- Parse arguments:
-		if attached separate_character_option_value('h') then
-			print_help
-			die(0)
-		elseif attached separate_character_option_value('n') as l_val and then not l_val.is_empty then
+		if attached separate_character_option_value('h')as l_val and then not  l_val.is_empty then
+				print ("invocation error: -h does not take an argument.%N")
+				print_help
+				die(1)
+		elseif attached separate_character_option_value('h')as l_val and then l_val.is_empty then
+		
+				print_help
+				die(0)
+		end
+		if attached separate_character_option_value('n') as l_val and then not l_val.is_empty then
 			name := l_val
 		else
 			print("invocation error: -n NAME is required.%N")
@@ -34,6 +43,6 @@ do
 			die (1)
 		end
 			-- normal action:
-			print ("Hello, " + name + "%N")
+			print ("Hello, " + name + "!%N")
 end
 end
