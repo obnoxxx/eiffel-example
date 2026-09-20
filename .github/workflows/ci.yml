@@ -28,9 +28,71 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+      - name: inspect eiffelstudio formula
+        id: eiffelstudio
+        shell: bash
+        run: |
+          set -euo pipefail
+          formula_json="$(brew info --json=v2 eiffelstudio)"
+          formula_version="$(jq -r '.formulae[0].versions.stable' <<<"$formula_json")"
+          formula_revision="$(jq -r '.formulae[0].revision // 0' <<<"$formula_json")"
+          formula_series="$(cut -d. -f1,2 <<<"$formula_version")"
+          keg_version="$formula_version"
+          if [ "$formula_revision" != "0" ]; then
+            keg_version="${keg_version}_$formula_revision"
+          fi
+          {
+            echo "brew_prefix=$(brew --prefix)"
+            echo "brew_prefix_key=$(brew --prefix | tr '/' '_')"
+            echo "keg_path=$(brew --cellar)/eiffelstudio/$keg_version"
+            echo "formula_version=${formula_version}-r${formula_revision}"
+            echo "precompile_root<<EOF"
+            echo "$HOME/Eiffel User Files/$formula_series/precomp"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: restore eiffelstudio cache
+        id: cache-eiffelstudio
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.eiffelstudio.outputs.keg_path }}
+            ${{ steps.eiffelstudio.outputs.brew_prefix }}/opt/eiffelstudio
+            ${{ steps.eiffelstudio.outputs.precompile_root }}
+          key: ${{ runner.os }}-${{ runner.arch }}-${{ steps.eiffelstudio.outputs.brew_prefix_key }}-brew-eiffelstudio-v1-${{ steps.eiffelstudio.outputs.formula_version }}
+      - name: expose eiffelstudio
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${{ steps.eiffelstudio.outputs.brew_prefix }}/opt"
+          ln -sfn "${{ steps.eiffelstudio.outputs.keg_path }}" "${{ steps.eiffelstudio.outputs.brew_prefix }}/opt/eiffelstudio"
+          echo "${{ steps.eiffelstudio.outputs.brew_prefix }}/opt/eiffelstudio/bin" >> "$GITHUB_PATH"
+          export PATH="${{ steps.eiffelstudio.outputs.brew_prefix }}/opt/eiffelstudio/bin:$PATH"
+      - name: verify cached eiffelstudio build path
+        id: verify-eiffelstudio
+        if: steps.cache-eiffelstudio.outputs.cache-hit == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v ec
+          make build EC='ec -batch'
+          rm -rf application application.ecf EIFGENs
       - name: install eiffel
+        if: steps.cache-eiffelstudio.outputs.cache-hit != 'true' || steps.verify-eiffelstudio.outcome != 'success'
         run: brew install eiffelstudio
         shell: bash
+      - name: warm eiffelstudio precompile cache
+        if: steps.cache-eiffelstudio.outputs.cache-hit != 'true' || steps.verify-eiffelstudio.outcome != 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_prefix="$(brew --prefix eiffelstudio)"
+          echo "$current_prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$current_prefix/bin:$PATH"
+          command -v ec
+          ec -version
+          make build EC='ec -batch'
+          rm -rf application application.ecf EIFGENs
       - name: install actionlint
         shell: bash
         run: brew install actionlint
