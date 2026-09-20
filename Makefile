@@ -33,7 +33,7 @@ lint.make:
 	@$(CHECKMAKE) Makefile
 	@echo Makefile is good.
 
-.PHINY: lint.workflows
+.PHONY: lint.workflows
 lint.workflows:
 	@echo " Linting GitHub workflows..."
 	@$(ACTIONLINT) --color
