@@ -12,8 +12,9 @@ create
 feature {NONE} -- application class: everything is private.
 	name: STRING
 
-feature {NONE} -- print help text
+feature {NONE}
 	print_help
+	-- print a usage/help text
 do
 		print(" USAGE: %N")
 		print(" application options .. %N")
@@ -21,8 +22,10 @@ do
 		print(" -n Name	caller's name - REQUIRED%N")
 		print(" -h	print this help text%N")
 end
-feature {NONE} -- Initialization
+feature {NONE}
 	make
+	-- Initialization/application action
+
 do
 		name := ""
 		-- Parse arguments:
