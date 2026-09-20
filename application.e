@@ -1,4 +1,4 @@
--- small example application in Eiffel
+-- A small and very sompl eexample application in Eiffel
 -- just for practice and illustration purposes.
 
 class
