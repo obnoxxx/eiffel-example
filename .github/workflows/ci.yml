@@ -37,9 +37,15 @@ jobs:
       - name: install checkmake
         shell: bash
         run: brew install checkmake
-      - name: run checks (lint, build, and test)
+      - name:  lint the Makefile
         shell: bash
-        run: |
-          time make lint
-          time make build
-          time make test
+        run: time make lint.make
+      - name: lint GitHub workflows
+        shell: bash
+        run: time make lint.workflows
+      - name: build the application
+        shell: bash
+        run: time make build
+      - name: run tests
+        shell: bash
+        run: time make test
