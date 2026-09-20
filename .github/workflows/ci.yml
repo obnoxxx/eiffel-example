@@ -107,7 +107,7 @@ jobs:
         run: time make lint.workflows
       - name: build the application
         shell: bash
-        run: time make build
+        run: time make build EC='ec -batch'
       - name: run tests
         shell: bash
         run: time make test
