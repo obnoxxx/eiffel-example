@@ -8,7 +8,7 @@ EC ?= ec
 
 CHECKMAKE_VERSION := v0.3.2
 ACTIONLINT_VERSION := v1.7.12
-CHECKMAKE := go run github.com/checkmake/checkmake/cmd/checkmake@$(CHECKMAKE_VERSION)
+CHECKMAKE := $(shell command -v checkmake 2>/dev/null || echo go run github.com/checkmake/checkmake/cmd/checkmake@$(CHECKMAKE_VERSION))
 ACTIONLINT := $(shell command -v actionlint 2>/dev/null || echo go run github.com/rhysd/actionlint/cmd/actionlint@$(ACTIONLINT_VERSION))
 
 .PHONY: all
