@@ -43,9 +43,9 @@ jobs:
       - name: lint GitHub workflows
         shell: bash
         run: time make lint.workflows
-      - name: build the application
+      - name: build the applications
         shell: bash
         run: time make build EC='ec -batch'
-      - name: run tests
+      - name: test the applications
         shell: bash
         run: time make test
