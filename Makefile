@@ -1,8 +1,10 @@
 
-TARGET := application
-SOURCE := application.e
+ARGS_BASE := args_application
 
-GENERATED := application application.ecf EIFGENs
+ARGS_TARGET := $(ARGS_BASE)
+ARGS_SOURCE := $(ARGS_BASE).e
+
+ARGS_GENERATED := $(ARGS_TARGET) $(ARGS_BASE).ecf EIFGENs
 
 EC ?= ec
 
@@ -15,16 +17,19 @@ ACTIONLINT := $(shell command -v actionlint 2>/dev/null || echo go run github.co
 all: build
 
 .PHONY: build
-build: $(TARGET)
+build: build.args
 
-$(TARGET): $(SOURCE) Makefile
-	@$(EC) $(SOURCE)
-	@chmod +x $(TARGET)
+.PHONY: build.args
+build.args: $(ARGS_TARGET)
 
-.PHONY: run
-run: build
+$(ARGS_TARGET): $(ARGS_SOURCE) Makefile
+	@$(EC) $(ARGS_SOURCE)
+	@chmod +x $(ARGS_TARGET)
+
+.PHONY: run.args
+run.args: build.args
 	@echo running the application...
-	@./$(TARGET) -n Eiffel
+	@./$(ARGS_TARGET) -n Eiffel
 	@echo done.
 
 .PHONY: lint.make
@@ -43,15 +48,20 @@ lint.workflows:
 lint: lint.make lint.workflows
 
 .PHONY: test
-test: build
-	@echo "testing the eapplication..."
-	@test "$$(./application -n Eiffel)" = "Hello, Eiffel!"
-	@echo "The application works correctly."
+test: test.args
+.PHONY: test.args
+test.args: build.args
+	@echo "testing the e args application..."
+	@test "$$(./$(ARGS_TARGET) -n Eiffel)" = "Hello, Eiffel!"
+	@test "$$(./$(ARGS_TARGET) -n world)" = "Hello, world!"
+	@echo "The arg sapplication works correctly."
 
 .PHONY: check
 check: lint test
 
 
 .PHONY: clean
-clean:
-	@$(RM) -r $(GENERATED)
+clean: clean.args
+.PHONY: clean.args
+clean.args:
+	@$(RM) -r $(ARGS_GENERATED)
