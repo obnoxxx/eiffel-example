@@ -2,7 +2,7 @@
 -- just for practice and illustration purposes.
 
 class
-	APPLICATION -- the root class
+	ARGS_APPLICATION -- the root class
 inherit
 	ARGUMENTS
 	EXCEPTIONS

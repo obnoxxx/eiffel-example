@@ -1,10 +1,15 @@
 
+HELLO_BASE := hello
 ARGS_BASE := args_application
 
 ARGS_TARGET := $(ARGS_BASE)
+HELLO_TARGET := $(HELLO_BASE)
 ARGS_SOURCE := $(ARGS_BASE).e
+HELLO_SOURCE := $(HELLO_BASE).e
 
-ARGS_GENERATED := $(ARGS_TARGET) $(ARGS_BASE).ecf EIFGENs
+ARGS_GEN := $(ARGS_TARGET) $(ARGS_BASE).ecf
+EIFFEL_CACHE_GEN := EIFGENs
+HELLO_GEN := $(HELLO_TARGET) $(HELLO_BASE).ecf
 
 EC ?= ec
 
@@ -17,7 +22,15 @@ ACTIONLINT := $(shell command -v actionlint 2>/dev/null || echo go run github.co
 all: build
 
 .PHONY: build
-build: build.args
+build: build.args build.hello
+
+.PHONY: build.hello
+build.hello: $(HELLO_TARGET)
+
+$(HELLO_TARGET): $(HELLO_SOURCE) Makefile
+	@$(EC) $(HELLO_SOURCE)
+	@chmod +x $(HELLO_TARGET)
+
 
 .PHONY: build.args
 build.args: $(ARGS_TARGET)
@@ -26,11 +39,20 @@ $(ARGS_TARGET): $(ARGS_SOURCE) Makefile
 	@$(EC) $(ARGS_SOURCE)
 	@chmod +x $(ARGS_TARGET)
 
+.PHONY: run.hello
+run.hello: build.hello
+	@echo running the hello application...
+	@./$(HELLO_TARGET)
+	@echo done.
+
 .PHONY: run.args
 run.args: build.args
-	@echo running the application...
+	@echo running the args application...
 	@./$(ARGS_TARGET) -n Eiffel
 	@echo done.
+
+.PHONY: run
+run: run.hello run.args
 
 .PHONY: lint.make
 lint.make:
@@ -48,10 +70,16 @@ lint.workflows:
 lint: lint.make lint.workflows
 
 .PHONY: test
-test: test.args
+test: test.args test.hello
+.PHONY: test.hello
+test.hello: build.hello
+	@echo "testing the hello application..."
+	@test "$$(./$(HELLO_TARGET))" = "Hello, Eiffel!"
+	@echo "The args sapplication works correctly."
+
 .PHONY: test.args
 test.args: build.args
-	@echo "testing the e args application..."
+	@echo "testing the  args application..."
 	@test "$$(./$(ARGS_TARGET) -n Eiffel)" = "Hello, Eiffel!"
 	@test "$$(./$(ARGS_TARGET) -n world)" = "Hello, world!"
 	@echo "The arg sapplication works correctly."
@@ -61,7 +89,14 @@ check: lint test
 
 
 .PHONY: clean
-clean: clean.args
+clean: clean.args clean.hello clean.eiffel-cache
 .PHONY: clean.args
 clean.args:
-	@$(RM) -r $(ARGS_GENERATED)
+	@$(RM) -r $(ARGS_GEN)
+.PHONY: clean.hello
+clean.hello:
+	@$(RM) -r $(HELLO_GEN)
+
+.PHONY: clean.eiffel-cache
+clean.eiffel-cache:
+	@$(RM) -r $(EIFFEL_CACHE_GEN)
