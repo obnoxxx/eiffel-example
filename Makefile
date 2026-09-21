@@ -75,21 +75,24 @@ test: test.args test.hello
 test.hello: build.hello
 	@echo "testing the hello application..."
 	@test "$$(./$(HELLO_TARGET))" = "Hello, Eiffel!"
-	@echo "The args sapplication works correctly."
+	@echo "The hello application works correctly."
 
 .PHONY: test.args
 test.args: build.args
 	@echo "testing the  args application..."
 	@test "$$(./$(ARGS_TARGET) -n Eiffel)" = "Hello, Eiffel!"
 	@test "$$(./$(ARGS_TARGET) -n world)" = "Hello, world!"
-	@echo "The arg sapplication works correctly."
+	@echo "The args application works correctly."
 
 .PHONY: check
 check: lint test
 
-
 .PHONY: clean
-clean: clean.args clean.hello clean.eiffel-cache
+clean: clean.apps clean.eiffel-cache
+
+.PHONY: clean.apps
+clean.apps: clean.args clean.hello
+
 .PHONY: clean.args
 clean.args:
 	@$(RM) -r $(ARGS_GEN)
